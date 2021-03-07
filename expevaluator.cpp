@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <stack>
 #include <sstream> 
@@ -22,7 +23,7 @@ void expEvalulator::evaluateMain(string programCode)	//evaluate user input
 {
 	infixVect.clear();
 	postfixVect.clear();
-	
+
 	convertPost(programCode);	//convert programCode to postfix
 	if (leftPar != rightPar)
 	{
@@ -36,9 +37,9 @@ void expEvalulator::evaluateMain(string programCode)	//evaluate user input
 	evaluatePost();	//evaluate postfix
 	cout << finalVal;	//display final result
 
-		
 
-	
+
+
 }
 
 
@@ -160,7 +161,7 @@ void expEvalulator::convertPost(string programCode)
 	leftPar = 0;
 	rightPar = 0;
 	string identifier;
-
+	string value;
 
 	for (size_t i = 0; i < programCode.size(); i++)		//tokenize programCode
 	{
@@ -266,14 +267,23 @@ void expEvalulator::convertPost(string programCode)
 		}
 		else if (isalpha(programCode[i])) {		//INDENTIFIER
 			identifier.push_back(programCode[i]);
-			while (isalpha(programCode[i+1])) {
+			while (isalpha(programCode[i + 1])) {
 				i++;
 				identifier.push_back(programCode[i]);
 			}
-			string value = retrieveValue(identifier);
-			infixVect.push_back(value);
-			//cout << "ident: " << identifier << "  value: " << value << endl;
 
+
+			map<string, string>::iterator temp = symbolTable.find(identifier);
+			if (temp != symbolTable.end()) {					//check if key is found in map
+				string value = retrieveValue(identifier);
+				infixVect.push_back(value);
+			}
+			else {
+
+				cout << endl << "ERROR: identidier is not found\n" << "*****TERMINATING PROGRAM*****\n";
+				exit(1);
+			}
+			//cout << "ident: " << identifier << "  value: " << value << endl;
 		}
 		//cout << "TOKEN: " << expToken;
 	}
@@ -417,7 +427,7 @@ bool expEvalulator::validExp(string programCode)	//check the expression is valid
 void expEvalulator::storeTable(string variable, string value)
 {
 	//cout << "Var2: " << variable << "    Value2: " << value << endl;
-	
+
 	symbolTable.insert(make_pair(variable, value));
 	return;
 }
@@ -436,12 +446,12 @@ void expEvalulator::displayTable() {
 	cout << "****** Symbol Table Variables and Values ******\n";
 
 	for (auto i = symbolTable.begin(); i != symbolTable.end(); i++) {
-		
-			cout << i->first << " = " << i->second << endl;
+
+		cout << i->first << " = " << i->second << endl;
 	}
 
 	return;
-} 
+}
 
 
 void expEvalulator::clearTable()	//clear symbolTable

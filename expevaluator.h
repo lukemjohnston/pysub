@@ -26,7 +26,7 @@ public:
 	void storeTable(std::string variable, std::string value);
 	std::string retrieveValue(std::string variable);
 	void displayTable();
-	
+
 };
 
 #endif
